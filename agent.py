@@ -24,6 +24,7 @@ class ActRequest(BaseModel):
     task_prompt:  str | None = None
     url:          str | None = None
     snapshot_html:str | None = None
+    screenshot:   str | None = None   # base64 PNG, not used in LLM call (cost)
     step_index:   int = 0
     history:      list = []
     model:        str | None = None
@@ -73,20 +74,22 @@ SYSTEM_PROMPT = """You are a precise web automation agent. Given a task, current
 
 Output ONLY valid JSON — an array of actions. No explanation, no markdown.
 
-Action types:
-- ClickAction:    {"type":"ClickAction","selector":{"type":"css","value":"..."}}
-- TypeAction:     {"type":"TypeAction","selector":{"type":"css","value":"..."},"text":"..."}
-- NavigateAction: {"type":"NavigateAction","url":"..."}
-- SelectDropDownOptionAction: {"type":"SelectDropDownOptionAction","selector":{"type":"css","value":"..."},"text":"..."}
+Action types (ONLY return 1 action per step — only the first is executed):
+- ClickAction:    {"type":"ClickAction","selector":{"css":"#id or .class"}}
+- TypeAction:     {"type":"TypeAction","selector":{"css":"input[name=q]"},"text":"value to type"}
+- NavigateAction: {"type":"NavigateAction","url":"https://..."}
+- SelectDropDownOptionAction: {"type":"SelectDropDownOptionAction","selector":{"css":"select#id"},"text":"Option Label"}
 - ScrollAction:   {"type":"ScrollAction","direction":"down","amount":300}
 - WaitAction:     {"type":"WaitAction","duration_ms":500}
+- done:           {"type":"done"}
 
 Rules:
-- Return 1-2 actions maximum per step
-- Prefer specific CSS selectors over generic ones
-- If task is complete, return []
-- If stuck after 3 same-type actions, try a different approach
-- Never exceed 12 steps total (history length is your guide)
+- Return exactly 1 action in the array
+- Prefer specific CSS selectors (id > name attr > class)
+- If task is complete, return [{"type":"done"}]
+- If stuck (same action 3 times), try NavigateAction or ScrollAction to get unstuck
+- Never exceed 12 steps (current step_index is your guide)
+- Stay under $0.05 total LLM cost per task
 """
 
 
