@@ -11,9 +11,9 @@ from pydantic import BaseModel
 
 app = FastAPI()
 
-OPENAI_BASE_URL = os.getenv("OPENAI_BASE_URL", "https://api.openai.com")
+OPENAI_BASE_URL = os.getenv("OPENAI_BASE_URL", "https://openrouter.ai/api")
 OPENAI_API_KEY  = os.getenv("OPENAI_API_KEY", "")
-LLM_MODEL       = os.getenv("LLM_MODEL", "gpt-4o-mini")  # cost-efficient default
+LLM_MODEL       = os.getenv("LLM_MODEL", "anthropic/claude-3.5-haiku")
 
 
 # ── Models ────────────────────────────────────────────────────────────────────
