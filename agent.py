@@ -13,7 +13,7 @@ app = FastAPI()
 
 OPENAI_BASE_URL = os.getenv("OPENAI_BASE_URL", "https://openrouter.ai/api")
 OPENAI_API_KEY  = os.getenv("OPENAI_API_KEY", "")
-LLM_MODEL       = os.getenv("LLM_MODEL", "anthropic/claude-3.5-haiku")
+LLM_MODEL       = os.getenv("LLM_MODEL", "anthropic/claude-sonnet-4-6")
 
 
 # ── Models ────────────────────────────────────────────────────────────────────
